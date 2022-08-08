@@ -142,6 +142,12 @@ public class AudioEngine {
         guard mainMixerNode == nil else { return }
 
         let mixer = Mixer(name: "AudioKit Engine Mixer")
+        
+        if mixer.avAudioNode.outputFormat(forBus: 0).sampleRate != Settings.sampleRate {
+            Log("Sample Rate has changed, creating new mainMixerNode at", Settings.sampleRate)
+            return
+        }
+        
         avEngine.attach(mixer.avAudioNode)
         avEngine.connect(mixer.avAudioNode, to: avEngine.outputNode, format: Settings.audioFormat)
         mainMixerNode = mixer
